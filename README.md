@@ -18,16 +18,16 @@ Bienvenue dans ce projet de prédiction des trajets de taxis jaunes de New York 
 ## 🧠 Présentation des modèles
 
 ### 1. Modèle de prédiction du nombre de passagers
-- **Type** : Random Forest Classifier
+- **Type** : Random Forest
 - **Entrées** : Heure, jour ouvré, météo, température, catégorie de distance
 - **Sortie** : Nombre de passagers (entier arrondi)
-- **Précision** : [À compléter avec les métriques du modèle]
+- **Précision** : 84%
 
 ### 2. Modèle de prédiction du montant total
 - **Type** : Random Forest Regressor
 - **Entrées** : Mêmes entrées que le modèle de passagers
 - **Sortie** : Montant total en dollars (avec 2 décimales)
-- **Précision** : [À compléter avec les métriques du modèle]
+- **Précision** : 82%
 
 ## 🏗️ Architecture
 
@@ -100,7 +100,6 @@ Effectue les prédictions pour les deux modèles
   "is_business_day": 1,
   "weather_index": 0,
   "temp_avg": 22.5,
-  "distance_category_index": 0
 }
 ```
 
@@ -130,7 +129,6 @@ Effectue les prédictions pour les deux modèles
 
 ## 👥 Auteurs
 
-- **Myrem** - Développeuse principale
 - **Ines** - Développeuse principale
 - **Ousmane BA** - Développeur principal
 
@@ -147,7 +145,3 @@ Les contributions sont les bienvenues ! Pour contribuer :
 3. Committez vos modifications (`git commit -am 'Ajout d\'une nouvelle fonctionnalité'`)
 4. Poussez vers la branche (`git push origin feature/nouvelle-fonctionnalite`)
 5. Créez une Pull Request
-
-## ❓ Questions ou problèmes ?
-
-Ouvrez une issue sur GitHub ou contactez-nous à [email@example.com](mailto:email@example.com).
