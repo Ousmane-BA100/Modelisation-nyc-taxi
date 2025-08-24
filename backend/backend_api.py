@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from pyspark.sql import SparkSession
 from pyspark.ml.regression import RandomForestRegressionModel
 from pyspark.ml.feature import VectorAssembler
@@ -13,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 # Initialisation de Flask
 app = Flask(__name__)
+CORS(app)
 
 # Configuration des chemins des modèles
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))

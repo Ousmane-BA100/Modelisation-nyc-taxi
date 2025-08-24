@@ -229,10 +229,28 @@ if st.button("🚕 Obtenir les prédictions", type="primary", use_container_widt
         
         try:
             st.sidebar.write(f"Tentative de connexion à: {backend_url}/predict")
-            response = requests.post(f"{backend_url}/predict", json=input_data, timeout=10)
-            st.sidebar.write(f"Réponse reçue: {response.status_code}")
+            st.sidebar.write("Données envoyées:", input_data)
             
-            if response.status_code == 200:
+            # Préparer les en-têtes
+            headers = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+            
+            # Faire la requête avec un timeout plus long
+            response = requests.post(
+                f"{backend_url}/predict",
+                json=input_data,
+                headers=headers,
+                timeout=30  # Augmenter le timeout à 30 secondes
+            )
+            
+            st.sidebar.write(f"Réponse reçue: {response.status_code}")
+            st.sidebar.write("En-têtes de la réponse:", dict(response.headers))
+            
+            if response.status_code != 200:
+                st.sidebar.error(f"Erreur du serveur: {response.text}")
+            else:
                 result = response.json()
                 
                 # Formatage des résultats
@@ -262,9 +280,6 @@ if st.button("🚕 Obtenir les prédictions", type="primary", use_container_widt
                 with st.expander("Détails de la prédiction", expanded=False):
                     st.json(result)
             
-            else:
-                st.error(f"Erreur lors de la prédiction : {response.text}")
-                
         except Exception as e:
             st.error(f"Une erreur s'est produite : {str(e)}")
 
