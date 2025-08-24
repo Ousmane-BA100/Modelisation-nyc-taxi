@@ -14,10 +14,16 @@ RUN apt-get update && apt-get install -y \
 #COPY spark-3.5.3-bin-hadoop3.tgz /opt/spark-3.5.3-bin-hadoop3.tgz
 
 # Copiez d'abord le fichier Spark
-COPY spark-3.5.3-bin-hadoop3.tgz /opt/
+#COPY spark-3.5.3-bin-hadoop3.tgz /opt/
 
 # Extraire Spark et le déplacer dans /opt/spark
-RUN tar -xvzf /opt/spark-3.5.3-bin-hadoop3.tgz -C /opt \
+#RUN tar -xvzf /opt/spark-3.5.3-bin-hadoop3.tgz -C /opt \
+ #   && mv /opt/spark-3.5.3-bin-hadoop3 /opt/spark \
+ #  && rm /opt/spark-3.5.3-bin-hadoop3.tgz
+
+# Télécharger et extraire Spark
+RUN wget https://archive.apache.org/dist/spark/spark-3.5.3/spark-3.5.3-bin-hadoop3.tgz -P /opt/ \
+    && tar -xvzf /opt/spark-3.5.3-bin-hadoop3.tgz -C /opt \
     && mv /opt/spark-3.5.3-bin-hadoop3 /opt/spark \
     && rm /opt/spark-3.5.3-bin-hadoop3.tgz
 
