@@ -57,24 +57,28 @@ def initialize_models() -> Tuple[bool, str]:
     try:
         # Configuration de Spark pour utiliser moins de mémoire
         spark_config = {
-            "spark.driver.memory": "512m",
-            "spark.executor.memory": "512m",
-            "spark.memory.fraction": "0.8",
-            "spark.memory.storageFraction": "0.3",
-            "spark.sql.shuffle.partitions": "2",
-            "spark.driver.maxResultSize": "512m",
-            "spark.ui.enabled": "false"
+            "spark.driver.memory": "1g",
+            "spark.executor.memory": "1g",
+            "spark.memory.fraction": "0.6",
+            "spark.memory.storageFraction": "0.2",
+            "spark.sql.shuffle.partitions": "1",
+            "spark.default.parallelism": "1",
+            "spark.driver.maxResultSize": "1g",
+            "spark.memory.offHeap.enabled": "false"
         }
         
-        # Initialisation de la session Spark avec la configuration optimisée
-        spark_builder = SparkSession.builder \
-            .appName("NYCTaxiPredictionAPI")
-            
-        # Ajout des configurations
-        for key, value in spark_config.items():
-            spark_builder = spark_builder.config(key, value)
-            
-        spark = spark_builder.getOrCreate()
+        # Création de la session Spark
+        spark = SparkSession.builder \
+            .appName("NYCTaxiPrediction") \
+            .config("spark.driver.memory", "1g") \
+            .config("spark.executor.memory", "1g") \
+            .config("spark.memory.fraction", "0.6") \
+            .config("spark.memory.storageFraction", "0.2") \
+            .config("spark.sql.shuffle.partitions", "1") \
+            .config("spark.default.parallelism", "1") \
+            .config("spark.driver.maxResultSize", "1g") \
+            .config("spark.memory.offHeap.enabled", "false") \
+            .getOrCreate()
         
         # Vérification de l'existence des dossiers de modèles
         if not os.path.exists(PASSENGER_MODEL_PATH):
