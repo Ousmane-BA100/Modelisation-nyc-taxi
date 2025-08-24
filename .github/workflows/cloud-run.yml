@@ -54,12 +54,15 @@ jobs:
 
     - name: Déploiement sur Cloud Run
       run: |
-        # Déploiement du backend
+        # Déploiement du backend avec plus de mémoire
         gcloud run deploy nyc-taxi-backend \
           --image europe-west9-docker.pkg.dev/trusty-anchor-468422-t9/docker-repo/nyc-taxi-backend:$GITHUB_SHA \
           --platform managed \
           --region $RUN_REGION \
           --port 8080 \
+          --memory 1Gi \
+          --cpu 1 \
+          --timeout 600 \
           --allow-unauthenticated
 
         # Déploiement du frontend

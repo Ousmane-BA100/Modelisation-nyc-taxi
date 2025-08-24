@@ -53,11 +53,26 @@ def initialize_models() -> Tuple[bool, str]:
     global spark, passenger_model, total_amount_model, feature_assembler
     
     try:
-        # Initialisation de la session Spark
-        spark = SparkSession.builder \
-            .appName("NYCTaxiPredictionAPI") \
-            .config("spark.ui.enabled", "false") \
-            .getOrCreate()
+        # Configuration de Spark pour utiliser moins de mémoire
+        spark_config = {
+            "spark.driver.memory": "512m",
+            "spark.executor.memory": "512m",
+            "spark.memory.fraction": "0.8",
+            "spark.memory.storageFraction": "0.3",
+            "spark.sql.shuffle.partitions": "2",
+            "spark.driver.maxResultSize": "512m",
+            "spark.ui.enabled": "false"
+        }
+        
+        # Initialisation de la session Spark avec la configuration optimisée
+        spark_builder = SparkSession.builder \
+            .appName("NYCTaxiPredictionAPI")
+            
+        # Ajout des configurations
+        for key, value in spark_config.items():
+            spark_builder = spark_builder.config(key, value)
+            
+        spark = spark_builder.getOrCreate()
         
         # Vérification de l'existence des dossiers de modèles
         if not os.path.exists(PASSENGER_MODEL_PATH):
