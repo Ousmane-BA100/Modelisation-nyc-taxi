@@ -15,8 +15,9 @@ st.set_page_config(
 # Charger les variables d'environnement
 load_dotenv()
 
-# Après load_dotenv()
+# Récupérer les variables d'environnement
 google_maps_api_key = os.getenv("GOOGLE_MAPS_API_KEY")
+backend_url = os.getenv("BACKEND_URL", "http://backend:5000")
 
 # Titre de l'application
 st.title("NYC Yellow Taxi Riding Prediction")
@@ -222,8 +223,14 @@ if st.button("🚕 Obtenir les prédictions", type="primary", use_container_widt
         # Afficher les données envoyées pour débogage
         st.json(input_data)
         
+        # Afficher les informations de débogage
+        st.sidebar.json(st.session_state.get('debug_info', {}))
+        st.sidebar.write(f"URL du backend: {backend_url}")
+        
         try:
-            response = requests.post("http://backend:5000/predict", json=input_data)
+            st.sidebar.write(f"Tentative de connexion à: {backend_url}/predict")
+            response = requests.post(f"{backend_url}/predict", json=input_data, timeout=10)
+            st.sidebar.write(f"Réponse reçue: {response.status_code}")
             
             if response.status_code == 200:
                 result = response.json()
