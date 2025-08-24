@@ -237,12 +237,11 @@ if st.button("🚕 Obtenir les prédictions", type="primary", use_container_widt
                 'Accept': 'application/json'
             }
             
-            # Faire la requête avec un timeout plus long
+            # Faire la requête sans timeout
             response = requests.post(
                 f"{backend_url}/predict",
                 json=input_data,
-                headers=headers,
-                timeout=30  # Augmenter le timeout à 30 secondes
+                headers=headers
             )
             
             st.sidebar.write(f"Réponse reçue: {response.status_code}")
