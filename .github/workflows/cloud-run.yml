@@ -1,0 +1,69 @@
+name: 🚀 Déploiement sur Google Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - '**/*.md'
+      - '**/*.ipynb'
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  RUN_REGION: europe-west9  # Mise à jour vers europe-west9
+  SERVICE_NAME: nyc-taxi-app
+
+jobs:
+  setup-build-deploy:
+    name: 🚀 Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout
+      uses: actions/checkout@v3
+
+    - name: 🔐 Authentification Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: ⚙️ Configuration Google Cloud
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+    - name: 🐳 Configurer Docker
+      run: |
+        gcloud auth configure-docker -q
+
+    - name: 🏗️ Build et push du backend
+      working-directory: ./backend
+      run: |
+        docker build -t gcr.io/$PROJECT_ID/nyc-taxi-backend:$GITHUB_SHA .
+        docker push gcr.io/$PROJECT_ID/nyc-taxi-backend:$GITHUB_SHA
+
+    - name: 🏗️ Build et push du frontend
+      working-directory: ./frontend
+      run: |
+        docker build -t gcr.io/$PROJECT_ID/nyc-taxi-frontend:$GITHUB_SHA .
+        docker push gcr.io/$PROJECT_ID/nyc-taxi-frontend:$GITHUB_SHA
+
+    - name: 🚀 Déploiement sur Cloud Run
+      run: |
+        # Déploiement du backend
+        gcloud run deploy nyc-taxi-backend \
+          --image gcr.io/$PROJECT_ID/nyc-taxi-backend:$GITHUB_SHA \
+          --platform managed \
+          --region $RUN_REGION \
+          --allow-unauthenticated \
+          --set-env-vars="GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json" \
+          --update-secrets=GOOGLE_APPLICATION_CREDENTIALS=GCP_SA_KEY:latest
+
+        # Déploiement du frontend
+        gcloud run deploy nyc-taxi-frontend \
+          --image gcr.io/$PROJECT_ID/nyc-taxi-frontend:$GITHUB_SHA \
+          --platform managed \
+          --region $RUN_REGION \
+          --allow-unauthenticated \
+          --set-env-vars="BACKEND_URL=https://nyc-taxi-backend-xxxxx-xx.a.run.app" \
+          --update-env-vars="GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}"
