@@ -59,6 +59,7 @@ jobs:
           --image europe-west9-docker.pkg.dev/trusty-anchor-468422-t9/docker-repo/nyc-taxi-backend:$GITHUB_SHA \
           --platform managed \
           --region $RUN_REGION \
+          --port 8080 \
           --allow-unauthenticated
 
         # Déploiement du frontend
