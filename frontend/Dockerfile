@@ -8,18 +8,22 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
+# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
-COPY .env .
+# Create .env file from build arguments
+ARG STREAMLIT_SERVER_PORT
+ARG STREAMLIT_SERVER_HEADLESS
+RUN echo "STREAMLIT_SERVER_PORT=$STREAMLIT_SERVER_PORT" > .env
+RUN echo "STREAMLIT_SERVER_HEADLESS=$STREAMLIT_SERVER_HEADLESS" >> .env
 
 # Environment variables
-ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_HEADLESS=true
+ENV STREAMLIT_SERVER_PORT=$STREAMLIT_SERVER_PORT
+ENV STREAMLIT_SERVER_HEADLESS=$STREAMLIT_SERVER_HEADLESS
 
 EXPOSE 8501
 

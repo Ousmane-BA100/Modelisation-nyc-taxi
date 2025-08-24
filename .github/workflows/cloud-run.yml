@@ -45,11 +45,11 @@ jobs:
     - name: 🏗️ Build et push du frontend
       working-directory: ./frontend
       env:
-        VUE_APP_GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
+        GOOGLE_MAPS_API_KEY: ${{ secrets.GOOGLE_MAPS_API_KEY }}
       run: |
-        # Créer un fichier .env temporaire pour le build
-        echo "VUE_APP_GOOGLE_MAPS_API_KEY=$VUE_APP_GOOGLE_MAPS_API_KEY" > .env
-        docker build -t europe-west9-docker.pkg.dev/trusty-anchor-468422-t9/docker-repo/nyc-taxi-frontend:$GITHUB_SHA .
+        docker build \
+          --build-arg VUE_APP_GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY \
+          -t europe-west9-docker.pkg.dev/trusty-anchor-468422-t9/docker-repo/nyc-taxi-frontend:$GITHUB_SHA .
         docker push europe-west9-docker.pkg.dev/trusty-anchor-468422-t9/docker-repo/nyc-taxi-frontend:$GITHUB_SHA
 
     - name: Déploiement sur Cloud Run
