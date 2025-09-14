@@ -1,4 +1,4 @@
-backend/spark-3.5.3-bin-hadoop3.tgz
+#backend/spark-3.5.3-bin-hadoop3.tgz
 
 .env
 __pycache__/
